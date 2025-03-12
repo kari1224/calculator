@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6a5acd">
+    <title>高爆與歌單計算器</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6a5acd, #9370db);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 350px;
+            animation: fadeIn 0.8s ease;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+        }
+        button {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #ff1493;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .input-group input {
+            width: 45%;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>高爆與歌單計算器</h1>
+        <select id="modeSelect">
+            <option value="normal">平常版</option>
+            <option value="event">活動版</option>
+        </select>
+        <div id="eventInputs" style="display:none;">
+            <div class="input-group">
+                <input type="number" id="input15" placeholder="幾個 15 (普爆)" />
+                <input type="number" id="input20" placeholder="幾個 20 (高爆)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input35" placeholder="幾個 35 (高爆)" />
+                <input type="number" id="input50" placeholder="幾個 50 (高爆)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input90" placeholder="幾個 90 (歌單)" />
+                <input type="number" id="input120" placeholder="幾個 120 (歌單)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input210" placeholder="幾個 210 (歌單)" />
+                <input type="number" id="input390" placeholder="幾個 390 (歌單)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input480" placeholder="幾個 480 (歌單)" />
+                <input type="number" id="input520" placeholder="幾個 520 (歌單)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input920" placeholder="幾個 920 (歌單)" />
+                <input type="number" id="input999" placeholder="幾個 999 (歌單)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input1314" placeholder="幾個 1314 (歌單)" />
+                <input type="number" id="input3344" placeholder="幾個 3344 (歌單)" />
+            </div>
+            <div class="input-group">
+                <input type="number" id="input5200" placeholder="幾個 5200 (歌單)" />
+            </div>
+        </div>
+        <input type="number" id="inputNumber" placeholder="輸入數字" />
+        <button onclick="calculate()">計算</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // 切換模式，顯示對應的輸入框
+        document.getElementById('modeSelect').addEventListener('change', function () {
+            const mode = this.value;
+            if (mode === 'event') {
+                document.getElementById('eventInputs').style.display = 'block';
+                document.getElementById('inputNumber').style.display = 'none';
+            } else {
+                document.getElementById('eventInputs').style.display = 'none';
+                document.getElementById('inputNumber').style.display = 'block';
+            }
+        });
+
+        function calculate() {
+            const mode = document.getElementById('modeSelect').value;
+            let resultText = '';
+
+            if (mode === 'normal') {
+                // 平常版計算
+                const number = parseInt(document.getElementById('inputNumber').value);
+                if (isNaN(number) || number < 0) {
+                    resultText = "請輸入有效的數字！";
+                } else {
+                    const songLists = Math.floor(number / 150);
+                    const remainderAfterSongLists = number % 150;
+                    const highExplosives = Math.floor(remainderAfterSongLists / 30);
+                    const remainder = remainderAfterSongLists % 30;
+
+                    resultText = `🎵 歌單：${songLists} 個<br>💥 高爆：${highExplosives} 個<br>✨ 剩餘：${remainder}`;
+                }
+            } else if (mode === 'event') {
+                // 活動版計算
+                const input15 = parseInt(document.getElementById('input15').value) || 0;
+                const input20 = parseInt(document.getElementById('input20').value) || 0;
+                const input35 = parseInt(document.getElementById('input35').value) || 0;
+                const input50 = parseInt(document.getElementById('input50').value) || 0;
+                const input90 = parseInt(document.getElementById('input90').value) || 0;
+                const input120 = parseInt(document.getElementById('input120').value) || 0;
+                const input210 = parseInt(document.getElementById('input210').value) || 0;
+                const input390 = parseInt(document.getElementById('input390').value) || 0;
+                const input480 = parseInt(document.getElementById('input480').value) || 0;
+                const input520 = parseInt(document.getElementById('input520').value) || 0;
+                const input920 = parseInt(document.getElementById('input920').value) || 0;
+                const input999 = parseInt(document.getElementById('input999').value) || 0;
+                const input1314 = parseInt(document.getElementById('input1314').value) || 0;
+                const input3344 = parseInt(document.getElementById('input3344').value) || 0;
+                const input5200 = parseInt(document.getElementById('input5200').value) || 0;
+
+                let songLists = 0;
+                let highExplosives = 0;
+                let normalExplosives = 0;
+
+                // 計算歌單
+                songLists += input5200 * 42;
+                songLists += input3344 * 30;
+                songLists += input1314 * 10;
+                songLists += input999 * 8;
+                songLists += input920 * 8;
+                songLists += input520 * 4;
+                songLists += input480 * 4;
+                songLists += input390 * 3;
+                songLists += input210 * 2;
+                songLists += input120 * 1;
+                songLists += input90 * 1;
+
+                // 計算高爆
+                highExplosives += input35 * 1;
+                highExplosives += input50 * 2;
+                highExplosives += input20 * 1;
+
+                // 計算普爆
+                normalExplosives += input15 * 1;
+
+                resultText = `🎵 歌單：${songLists} 個<br>💥 高爆：${highExplosives} 個<br>🔥 普爆：${normalExplosives} 個`;
+            }
+
+            document.getElementById('result').innerHTML = resultText;
+        }
+    </script>
+</body>
+</html>
